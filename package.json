@@ -11,18 +11,20 @@
     "url": "git://github.com/amirrajan/sortis.git"
   },
   "dependencies": {
-    "express": "~3.0.1",
+    "@glimpse/glimpse-node-agent": "^0.10.3",
+    "@glimpse/glimpse-node-server": "^0.10.3",
+    "bower": "~1.2.8",
     "ejs": "~0.8.3",
+    "express": "~3.0.1",
     "jasmine-node": "~1.0.26",
-    "underscore": "~1.4.2",
-    "socket.io": "~0.9.11",
-    "qs": "~0.6.5",
     "oauth": "~0.9.10",
+    "qs": "~0.6.5",
     "redis": "~0.8.4",
     "redis-url": "0.1.0",
-    "twilio": "~1.1.4",
     "request": "~2.27.0",
-    "bower": "~1.2.8"
+    "socket.io": "~0.9.11",
+    "twilio": "~1.1.4",
+    "underscore": "~1.4.2"
   },
   "subdomain": "pomodoro",
   "engines": {
