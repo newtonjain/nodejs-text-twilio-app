@@ -1,0 +1,88 @@
+<% include header %>
+
+<div id="dashboard" ng-app="App" ng-controller="AppCtrl">
+  <div class="row">
+    <input type="text" ng-model="message" placeholder="message" class="col-md-10" />
+    <div class="clearfix visible-xs visible-sm" style="margin-top: 10px"></div>
+    <a class="col-md-2" ng-click="sendText()">submit</a>
+  </div>
+  <hr />
+  <div class="row">
+    <p>
+      Sending a <code>text</code> or posting a <code>message</code> using the form above will perform: action
+    </p>
+    <ul>
+      <li><code>break</code>: starts a break</li>
+      <li><code>clear</code> or <code>[spaces] (empty message)</code>: aborts current task or break</li>
+      <li><code>status</code>: gives you the current status</li>
+      <li><code>any other phrase</code>: starts a new task, ending the previous one if applicable</li>
+    </ul>
+  </div>
+  <hr />
+  <div class="row" style="display: none" ng-show="hasPomodoro()">
+    {{ currentPomodoro.title }} - {{ currentPomodoro.minutesLeft }} minutes left
+  </div>
+  <div class="row" style="display: none" ng-show="isLazy()">
+    no pomodoro is currently running, you lazy, lazy human
+  </div>
+  <div class="row" style="display: none" ng-show="hasBreak()">
+    yay! you're on a break, you've earned it! - {{ currentBreak.minutesLeft }} minutes left
+  </div>
+</div>
+
+<script>
+  var index = angular.module("App", []);
+
+  index.controller("AppCtrl", function($scope, $http) {
+    $scope.currentPomodoro = { };
+    $scope.currentBreak = { };
+
+    $scope.sendText = function() {
+      console.log('sending');
+      $http.post('/text', { Body: $scope.message })
+        .success(function(data, status, headers, config) {
+          $scope.message = "";
+        });
+    };
+
+    $scope.hasPomodoro = function() {
+      return $scope.currentPomodoro.startTime;
+    };
+
+    $scope.hasBreak = function() {
+      return $scope.currentBreak.startTime;
+    };
+    
+    $scope.isLazy = function() {
+      if($scope.hasPomodoro()) return false;
+      if($scope.hasBreak()) return false;
+      return true;
+    }
+
+    $scope.getCurrentPomodoro = function() {
+      $http({ method: 'GET', url: '/current' })
+        .success(function(pomodoro) {
+          pomodoro.minutesLeft = (pomodoro.minutesLeft || 0).toFixed(2);
+          $scope.currentPomodoro = pomodoro;
+        });
+    }
+
+    $scope.getCurrentBreak = function() {
+      $http({ method: 'GET', url: '/break' })
+        .success(function(currentBreak) {
+          currentBreak.minutesLeft = (currentBreak.minutesLeft || 0).toFixed(2);
+          $scope.currentBreak = currentBreak;
+        });
+    }
+
+    $scope.getCurrentPomodoro();
+    $scope.getCurrentBreak();
+
+    setInterval(function() {
+      $scope.getCurrentPomodoro();
+      $scope.getCurrentBreak();
+    }, 1000);
+  });
+</script>
+
+<% include footer %>
