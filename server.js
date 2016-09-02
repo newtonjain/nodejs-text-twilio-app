@@ -1,5 +1,4 @@
 
-
 var express = require('express');
 var glimpseAgent = require('@glimpse/glimpse-node-agent'),
     glimpseServer = require('@glimpse/glimpse-node-server')
